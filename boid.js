@@ -5,7 +5,7 @@ class Boid
       this.pos = createVector(float(x), float(y));
       this.vel = createVector(0, 0);
       this.acc = createVector(0, 0);
-      this.maxspeed = 3;
+      this.maxspeed = 2;
       this.maxforce = 0.05;
       this.r = 5;
     }
@@ -18,10 +18,19 @@ class Boid
       var ali = this.alignment(boids);
       var coh = this.cohesion(boids);
 
-      print("Cohesion: " + coh);
+      // print("Cohesion: " + coh);
 
       this.vel.add(sep).add(ali).add(coh);
+
+      this.vel.limit(this.maxspeed);
+
       this.pos.add(this.vel);
+
+      // Wraparound
+      if (this.pos.x > width) this.pos.x = 0;
+      if (this.pos.x < 0) this.pos.x = width;
+      if (this.pos.y > height) this.pos.y = 0;
+      if (this.pos.y < 0) this.pos.y = height;
     }
 
     draw()
@@ -58,7 +67,7 @@ class Boid
 
       for (let other of boids)
       {
-        print("pos: " + this.pos + " other.pos: " + other.pos);
+        // print("pos: " + this.pos + " other.pos: " + other.pos);
         let d = dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
 
         if (d > 0 && d < max_dist)
@@ -79,7 +88,25 @@ class Boid
 
     separation(boids)
     {
-     
+     let max_dist = 25;
+
+      let sum = createVector(0, 0);
+
+      for(let other of boids)
+      {
+        let d = dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
+
+        if (d > 0 && d < max_dist)
+        {
+          let diff = p5.Vector.sub(this.pos, other.pos);
+
+          diff.div(d);
+
+          sum.add(diff);
+        }
+      }
+
+      return sum;
     }
 
     alignment(boids)
