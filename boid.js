@@ -5,7 +5,7 @@ class Boid
       this.pos = createVector(float(x), float(y));
       this.vel = createVector(0, 0);
       this.acc = createVector(0, 0);
-      this.maxspeed = 2;
+      this.maxspeed = 2.5;
       this.maxforce = 0.05;
       this.r = 5;
     }
@@ -111,6 +111,31 @@ class Boid
 
     alignment(boids)
     {
+      let max_dist = 50;
 
+      let sum = createVector(0, 0);
+
+      let count = 0;
+
+      for(let other of boids)
+      {
+        let d = dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
+
+        if (d > 0 && d < max_dist)
+        {
+          sum.add(other.vel);
+
+          count++;
+        }
+      }
+
+      if (count > 0)
+      {
+        sum.div(count);
+
+        sum.limit(this.maxforce);
+
+        return sum;
+      }
     }
   }

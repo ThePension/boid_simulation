@@ -1,5 +1,5 @@
 boids = [];
-boids_num = 10;
+boids_num = 50;
 
 function setup() {
   createCanvas(400, 400);
